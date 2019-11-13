@@ -1,0 +1,22 @@
+{
+    "name": "nailfor/php-queue-client",
+    "description": "a queue broker client library for php",
+    "keywords": ["amqp", "reactPHP", "IoT"],
+    "license": "LGPL-3.0-or-later",
+    "authors": [
+        {
+            "name": "Nailfor"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "nailfor\\queue\\": "src"
+        }
+    },
+    "require": {
+        "react/socket": "^1.1"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^5.0.0"
+    }
+}
