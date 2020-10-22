@@ -32,7 +32,7 @@ class AMQP implements Protocol
      * @param type $stream
      * @param type $params
      */
-    protected function setEvent($stream, $params)
+    public function setEvent($stream, $params)
     {
         $events = $params['events'] ?? [];
         
@@ -44,27 +44,11 @@ class AMQP implements Protocol
     /**
      * {@inheritdoc}
      */
-    public function setTopics($topics, $connection, $client)
-    {
-        foreach ($topics as $topic=>$params) {
-            $connection->then(function ($stream) use ($client, $topic, $params) {
-                $subscribe = new Subscribe(['destination' => $topic]);
-                $client->sendPacketToStream($stream, $subscribe);
-                
-                $this->setEvent($stream, $params);
-            });
-            
-        }
-    }
-    
-    /**
-     * {@inheritdoc}
-     */
     public function next($data)
     {
         static::$rawData .= $data;
         
-        if ($data{-2} == "\x00" && $data{-1} == "\n") {
+        if ($data[-2] == "\x00" && $data[-1] == "\n") {
             $data = static::$rawData;
             static::$rawData = '';
             
@@ -95,14 +79,18 @@ class AMQP implements Protocol
     }
     
     
-    public function connect()
+    public function getConnect()
     {
         return Connect::class;
     }
     
-    public function connectionAck()
+    public function getConnectionAck()
     {
         return ConnectionAck::class;
     }
     
+    public function getSubscribe() 
+    {
+        return Subscribe::class;
+    }
 }

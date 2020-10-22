@@ -59,5 +59,9 @@ class Packet extends ControlPacket
         }
         return $this->attributes[$name] ?? '';
     }
-    
+
+    public function __toString() 
+    {
+        return addslashes($this->payload);
+    }    
 }

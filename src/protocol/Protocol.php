@@ -11,8 +11,6 @@ interface Protocol
     /** @return int */
     public function getProtocolVersion();
     
-    public function setTopics($topics, $connection, $client);
-
     public function next($data);
     
 }
