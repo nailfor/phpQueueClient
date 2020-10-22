@@ -18,6 +18,7 @@ class Connect extends Packet
         if ($pass) {
             $this->attributes['passcode'] = $pass;
         }
+        
         parent::__construct();
     }
     
@@ -29,6 +30,7 @@ class Connect extends Packet
         if (is_null($this->clientId)) {
             $this->clientId = md5(microtime());
         }
+        
         return substr($this->clientId, 0, 23);
     }
 }

@@ -4,60 +4,35 @@ namespace nailfor\queue\packet;
 
 abstract class ControlPacket
 {
-
-    protected $payload = '';
-
-    protected $identifier;
+    use Traits\HasAttributes;
+    use Traits\Stringable;
     
-    public $rawData = '';
-
-    public function parse()
-    {
-        return $this;
-    }
+    /**
+     * Stored payload string
+     * @var string
+     */
+    protected $payload = '';
+    
 
     /**
-     * @param Version $version
-     * @param string $rawInput
-     * @return static
+     * Get payload without headers
+     * @return type
      */
-    public static function parsePacket(Version $version, $rawInput)
-    {
-        static::checkRawInputValidControlPackageType($rawInput);
-        
-        $packet = new static($version);
-        $packet->rawData = $rawInput;
-        $packet->parse();
-        return $packet;
-    }
-
-    protected static function checkRawInputValidControlPackageType($rawInput)
-    {
-        $packetType = ord($rawInput[0]) >> 4;
-        if ($packetType !== static::getControlPacketType()) {
-            throw new \RuntimeException('raw input is not valid for this control packet');
-        }
-    }
-
-    /** @return int */
-    public static function getControlPacketType() {
-        throw new \RuntimeException('you must overwrite getControlPacketType()');
-    }
-
-    protected function getPayloadLength()
-    {
-        return strlen($this->getPayload());
-    }
-
     public function getPayload()
     {
         return $this->payload;
     }
-
-    protected function getRemainingLength()
+    
+    /**
+     * Get packet payload with headers
+     * @return type
+     */
+    public function get()
     {
-        return strlen($this->getVariableHeader()) + $this->getPayloadLength();
-    }
+        return $this->getFixedHeader() .
+               $this->getVariableHeader() .
+               $this->getPayload();
+    }    
 
     /**
      * @return string
@@ -75,48 +50,13 @@ abstract class ControlPacket
         return '';
     }
 
+    
     /**
-     * @param $stringToAdd
+     * show packet for console output
+     * @return type
      */
-    public function addRawToPayLoad($stringToAdd)
+    public function __toString() 
     {
-        $this->payload .= $stringToAdd;
-    }
-
-    /**
-     * @param $fieldPayload
-     */
-    public function addLengthPrefixedField($fieldPayload)
-    {
-        $return = $this->getLengthPrefixField($fieldPayload);
-        $this->addRawToPayLoad($return);
-    }
-
-    public function getLengthPrefixField($fieldPayload)
-    {
-        $stringLength = strlen($fieldPayload);
-        $msb = $stringLength >> 8;
-        $lsb = $stringLength % 256;
-        $return = chr($msb);
-        $return .= chr($lsb);
-        $return .= $fieldPayload;
-
-        return $return;
-    }
-
-    public function get()
-    {
-        return $this->getFixedHeader() .
-               $this->getVariableHeader() .
-               $this->getPayload();
-    }
-
-    /**
-     * @param $byte1
-     * @return $byte1 unmodified
-     */
-    protected function addReservedBitsToFixedHeaderControlPacketType($byte1)
-    {
-        return $byte1;
-    }
+        return addslashes($this->payload);
+    }    
 }

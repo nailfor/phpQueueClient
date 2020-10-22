@@ -13,11 +13,12 @@ class Subscribe extends Packet
     ];
     
 
-    public function __construct($options) 
+    public function __construct($topic) 
     {
-        $this->fill($options);
-        $this->attributes['id'] = static::$subId;
-        $this->attributes['ack'] = $this->attributes['ack'] ?? 'auto';
+        $this->id = static::$subId;
+        $this->ack = $this->attributes['ack'] ?? 'auto';
+        $this->destination = $topic;
+        
         static::$subId++;
         
         parent::__construct();

@@ -9,7 +9,11 @@ use nailfor\queue\packet\amqp\Message;
 
 class AMQP implements Protocol 
 {
-    static $rawData = '';
+    /**
+     * Stored raw data from packet
+     * @var type 
+     */
+    protected static $rawData = '';
     
     /**
      * {@inheritdoc}
@@ -79,17 +83,30 @@ class AMQP implements Protocol
     }
     
     
-    public function getConnect()
+    /**
+     * Get class connect
+     * @return string
+     */
+    public function getConnect() : string
     {
         return Connect::class;
     }
     
-    public function getConnectionAck()
+    
+    /**
+     * Get class connectAck
+     * @return string
+     */
+    public function getConnectionAck() : string
     {
         return ConnectionAck::class;
     }
     
-    public function getSubscribe() 
+    /**
+     * Get class subscribe
+     * @return string
+     */
+    public function getSubscribe() : string
     {
         return Subscribe::class;
     }

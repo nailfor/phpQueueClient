@@ -6,8 +6,6 @@ use nailfor\queue\packet\ControlPacket;
 
 class Packet extends ControlPacket
 {
-    protected $fillable = [];
-    protected $attributes = [];
     
     public function __construct() 
     {
@@ -41,27 +39,5 @@ class Packet extends ControlPacket
             '\\'    => '\\\\',
         ]);
     }
-    
-    protected function fill($options)
-    {
-        foreach ($this->fillable as $key) {
-            $val = is_array($options) ? ($options[$key] ?? null) : ($options->$key ?? null);
-            if ($val !== null) {
-                $this->attributes[$key] = $val;
-            }
-        }
-    }
-    
-    public function __get($name) 
-    {
-        if (property_exists($this, $name)) {
-            return $this->{$name};
-        }
-        return $this->attributes[$name] ?? '';
-    }
 
-    public function __toString() 
-    {
-        return addslashes($this->payload);
-    }    
 }

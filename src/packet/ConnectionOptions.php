@@ -29,4 +29,9 @@ class ConnectionOptions
     {
         return $this->options[$name] ?? null;
     }
+    
+    public function toArray()
+    {
+        return $this->options;
+    }
 }

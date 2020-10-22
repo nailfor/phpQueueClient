@@ -46,7 +46,6 @@ class Client
         $options = $this->options;
 
         $promise = $this->socketConnector->connect($this->url);
-        
         $promise->then(Closure::fromCallable([$this, 'onData']));
         
         $connection = $promise->then(Closure::fromCallable([$this, 'sendConnectPacket']));

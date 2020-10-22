@@ -15,7 +15,7 @@ class Subscriber extends Listener
 
         $subscribeClass = $this->protocol->getSubscribe();
         foreach ($topics as $topic => $params) {
-            $subscribe = new $subscribeClass(['destination' => $topic]);
+            $subscribe = new $subscribeClass($topic);
 
             $this->sendPacketToStream($subscribe);
             $this->protocol->setEvent($this->stream, $params);
