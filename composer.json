@@ -1,7 +1,7 @@
 {
     "name": "nailfor/php-queue-client",
     "description": "a queue broker client library for php",
-    "keywords": ["amqp", "reactPHP", "IoT"],
+    "keywords": ["amqp", "mqtt", "reactPHP", "IoT"],
     "license": "LGPL-3.0-or-later",
     "authors": [
         {
