@@ -4,6 +4,7 @@ namespace nailfor\queue\protocol\amqp;
 
 class Subscribe extends Packet 
 {
+    const EVENT = 'SUBSCRIBE';
     static $subId = 0;
     protected $command = 'SUBSCRIBE';
     
@@ -13,11 +14,11 @@ class Subscribe extends Packet
     ];
     
 
-    public function __construct($topic) 
+    public function __construct($params) 
     {
         $this->id = static::$subId;
-        $this->ack = $this->attributes['ack'] ?? 'auto';
-        $this->destination = $topic;
+        $this->ack = $params['ack'] ?? 'auto';
+        $this->destination = $params['topic'] ?? '';
         
         static::$subId++;
         

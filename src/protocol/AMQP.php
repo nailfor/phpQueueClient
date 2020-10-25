@@ -2,10 +2,12 @@
 
 namespace nailfor\queue\protocol;
 
+use nailfor\queue\protocol\amqp\receive\ConnectionAck;
+use nailfor\queue\protocol\amqp\receive\Message;
 use nailfor\queue\protocol\amqp\Connect;
-use nailfor\queue\protocol\amqp\ConnectionAck;
 use nailfor\queue\protocol\amqp\Subscribe;
-use nailfor\queue\protocol\amqp\Message;
+
+use DirectoryIterator;
 
 class AMQP implements IProtocol 
 {
@@ -13,7 +15,22 @@ class AMQP implements IProtocol
      * Stored raw data from packet
      * @var type 
      */
-    protected static $rawData = '';
+    protected $packetData = '';
+
+    public function __construct() 
+    {
+        $path = __DIR__;
+        $packets = strtolower(static::class);
+        
+        foreach (new DirectoryIterator("$path/amqp/receive") as $fileInfo) {
+            if($fileInfo->isDot()) {
+                continue;
+            }
+            $name = $fileInfo->getBasename('.php');
+            $class = "$packets\\receive\\$name";
+            $this->acknowledges[$class::getType()] = $class;
+        }
+    }
     
     /**
      * {@inheritdoc}
@@ -36,13 +53,10 @@ class AMQP implements IProtocol
      */
     public function next($data)
     {
-        static::$rawData .= $data;
+        $this->packetData .= $data;
         
         if ($data[-2] == "\x00" && $data[-1] == "\n") {
-            $data = static::$rawData;
-            static::$rawData = '';
-            
-            $packet = $this->parse($data);
+            $packet = $this->parse();
             if ($packet) {
                 yield $packet;
             }
@@ -51,20 +65,22 @@ class AMQP implements IProtocol
     
     /**
      * Parse data and get Packet
-     * @param type $rawData
-     * @return Message
+     * @return Packet
      */
-    protected function parse($rawData) {
-        $data = explode("\n", $rawData);
+    protected function parse() {
+        $data = explode("\n", $this->packetData);
         $type = array_shift($data);
-        $packet = '';
-        switch ($type) {
-            case 'CONNECTED':
-                return;
-            case 'MESSAGE':
-                $packet = new Message($data);
-                break;
+        
+        $packetClass = $this->acknowledges[$type] ?? 0;
+        if (!$packetClass) {
+            return;
         }
+        
+        $packet = new $packetClass([], $this);
+        $packet->parse($this->packetData);
+                
+        $this->packetData = '';
+        
         return $packet;
     }
     

@@ -4,6 +4,7 @@ namespace nailfor\queue\protocol\amqp;
 
 class Connect extends Packet 
 {
+    const EVENT = 'CONNECT';
     protected $command = 'CONNECT';
 
     protected $fillable = [

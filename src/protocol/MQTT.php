@@ -96,20 +96,6 @@ class MQTT implements IProtocol
         $packet = new $packetClass([], $this);
         $packet->parse($this->packetData);
                 
-        /*
-        $data = explode("\n", $this->packetData);
-        $type = array_shift($data);
-        $packet = '';
-        switch ($type) {
-            case 'CONNECTED':
-                return;
-            case 'MESSAGE':
-                $packet = new Message($data);
-                break;
-        }
-         * 
-         */
-        
         $this->packetData = '';
         
         return $packet;
