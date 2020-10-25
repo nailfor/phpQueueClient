@@ -118,6 +118,8 @@ also commands are available
     ClientFactory::publish
     ClientFactory::unsubscribe
     ClientFactory::ping
+    
+The Logger suppurt 3 level of details: notice, info and debug. Offcourse you can disable it set null in last param
 
 
 ## Notice - (Oct 21th, 2020)
