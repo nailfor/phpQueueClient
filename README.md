@@ -7,9 +7,9 @@ phpQueueClient is an client library for AMQP and MQTT queues server. Its based o
 Goal of this project is easy to use both AMQP and MQTT client for PHP in a modern architecture without using any php modules.
 Original idea taken from https://github.com/oliverlorenz/phpMqttClient
 
-yes it correctly supports both qos protocols
-yes it works with huge data in a packet
-yes it can receive, ping, unsubscribe and publish
+* yes it correctly supports both qos protocols
+* yes it works with huge data in a packet
+* yes it can receive, ping, unsubscribe and publish
 
 * Protocol specifications: http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/csprd02/mqtt-v3.1.1-csprd02.html
 
