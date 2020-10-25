@@ -78,7 +78,7 @@ class MQTTClass
         exit;
     }
 
-    public static function subscribe()
+    public function subscribe()
     {
         $url    = '127.0.0.1:5672';
 
