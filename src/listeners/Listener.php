@@ -2,7 +2,6 @@
 
 namespace nailfor\queue\listeners;
 
-use Closure;
 use nailfor\queue\protocol\Violation;
 use nailfor\queue\packet\ControlPacket;
 
@@ -20,19 +19,57 @@ class Listener
         $this->Log = $log;
         $this->options = $options;
     }
-
-    protected function sendPacketToStream(ControlPacket $controlPacket)
+    
+    /**
+     * Set listener on event
+     * @param type $params
+     */
+    public function setEvent($params)
     {
-        $this->log('send '. $controlPacket);
+        $events = $params['events'] ?? [];
         
+        foreach ($events as $event => $callback) {
+            $this->stream->on($event, $callback);
+        }
+    }    
+
+    /**
+     * Send packet to stream
+     * @param ControlPacket $controlPacket
+     * @return type
+     */
+    protected function send(ControlPacket $controlPacket)
+    {
+        $class = $controlPacket->getName();
+        
+
         $message = $controlPacket->get();
-        return $this->stream->write($message);
+        $payload = bin2hex($message);
+
+        $controlPacket->incrasePacket();
+        $res = $this->stream->write($message);
+        
+        $class = $controlPacket->getName();
+        $event = $controlPacket->getEventName() . '_SEND';
+
+        $this->stream->emit($event, [$controlPacket]);
+        
+        $this->log("send '$class', emit '$event'");
+        $this->log("$class: $controlPacket", "info");
+        $this->log("raw data: '$payload'", 'debug');
+        
+        return $res;
     }
     
-    protected function log($str)
+    /**
+     * Logger
+     * @param string $str
+     * @param string $level
+     */
+    protected function log($str, $level='notice')
     {
         if ($this->Log) {
-            $this->Log->info($str);
+            $this->Log->$level($str);
         }
     }
 }

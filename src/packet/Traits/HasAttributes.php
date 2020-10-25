@@ -17,7 +17,8 @@ trait HasAttributes
             $data = $data->toArray();
         }
         
-        foreach ($this->fillable as $key) {
+        $fillable = $this->fillable ?? [];
+        foreach ($fillable as $key) {
             $val = $data[$key] ?? null;
             if ($val !== null) {
                 $this->attributes[$key] = $val;
@@ -35,7 +36,13 @@ trait HasAttributes
         if (property_exists($this, $name)) {
             return $this->{$name};
         }
-        return $this->attributes[$name] ?? '';
+        
+        $getter = "get{$name}Attribute";
+        if (method_exists($this, $getter)) {
+            return $this->$getter();
+        }
+        
+        return $this->attributes[$name] ?? null;
     }
     
     /**

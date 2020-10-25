@@ -2,13 +2,13 @@
 
 namespace nailfor\queue\listeners;
 
-class Connector extends Listener
+class Disconnector extends Listener
 {
     public function subscribe()
     {
         $protocol = $this->protocol;
-        $connectClass = $protocol->getConnect();
-        $packet = new $connectClass($this->options, $protocol);
+        $disconnectClass = $protocol->getDisconnect();
+        $packet = new $disconnectClass($this->options, $protocol);
 
         $this->send($packet);
         

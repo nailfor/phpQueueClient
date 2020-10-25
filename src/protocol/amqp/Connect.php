@@ -1,6 +1,6 @@
 <?php
 
-namespace nailfor\queue\packet\amqp;
+namespace nailfor\queue\protocol\amqp;
 
 class Connect extends Packet 
 {
@@ -30,7 +30,6 @@ class Connect extends Packet
         if (is_null($this->clientId)) {
             $this->clientId = md5(microtime());
         }
-        
         return substr($this->clientId, 0, 23);
     }
 }

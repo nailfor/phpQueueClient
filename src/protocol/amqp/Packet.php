@@ -1,12 +1,11 @@
 <?php
 
-namespace nailfor\queue\packet\amqp;
+namespace nailfor\queue\protocol\amqp;
 
 use nailfor\queue\packet\ControlPacket;
 
 class Packet extends ControlPacket
 {
-    
     public function __construct() 
     {
         $payload = [];

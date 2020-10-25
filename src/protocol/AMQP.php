@@ -2,12 +2,12 @@
 
 namespace nailfor\queue\protocol;
 
-use nailfor\queue\packet\amqp\Connect;
-use nailfor\queue\packet\amqp\ConnectionAck;
-use nailfor\queue\packet\amqp\Subscribe;
-use nailfor\queue\packet\amqp\Message;
+use nailfor\queue\protocol\amqp\Connect;
+use nailfor\queue\protocol\amqp\ConnectionAck;
+use nailfor\queue\protocol\amqp\Subscribe;
+use nailfor\queue\protocol\amqp\Message;
 
-class AMQP implements Protocol 
+class AMQP implements IProtocol 
 {
     /**
      * Stored raw data from packet
@@ -29,20 +29,6 @@ class AMQP implements Protocol
     public function getProtocolVersion()
     {
         return 1.1;
-    }
-    
-    /**
-     * Set listener on event
-     * @param type $stream
-     * @param type $params
-     */
-    public function setEvent($stream, $params)
-    {
-        $events = $params['events'] ?? [];
-        
-        foreach ($events as $event => $callback) {
-            $stream->on($event, $callback);
-        }
     }
     
     /**
@@ -90,6 +76,15 @@ class AMQP implements Protocol
     public function getConnect() : string
     {
         return Connect::class;
+    }
+    
+    /**
+     * Get class publish
+     * @return string
+     */
+    public function getPublish() : string
+    {
+        return Message::class;
     }
     
     

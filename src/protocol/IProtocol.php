@@ -2,7 +2,7 @@
 
 namespace nailfor\queue\protocol;
 
-interface Protocol 
+interface IProtocol 
 {
 
     /** @return string */

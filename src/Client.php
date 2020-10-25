@@ -2,12 +2,13 @@
 
 namespace nailfor\queue;
 
-use nailfor\queue\protocol\Protocol;
+use nailfor\queue\protocol\IProtocol;
 use nailfor\queue\packet\ConnectionOptions;
+use nailfor\queue\listeners\Acceptor;
 use nailfor\queue\listeners\Connector;
-use nailfor\queue\listeners\Keeper;
+use nailfor\queue\listeners\QoSLevel1;
+use nailfor\queue\listeners\QoSLevel2;
 use nailfor\queue\listeners\Receiver;
-use nailfor\queue\listeners\Subscriber;
 
 use Closure;
 use React\EventLoop\LoopInterface as Loop;
@@ -25,7 +26,7 @@ class Client
     protected $protocol;
     protected $options;
 
-    public function __construct(string $url, Loop $loop, ReactConnector $connector, Protocol $protocol, array $options)
+    public function __construct(string $url, Loop $loop, ReactConnector $connector, IProtocol $protocol, array $options)
     {
         $this->url = $url;
         $this->protocol = $protocol;
@@ -34,25 +35,38 @@ class Client
 
         $this->options = new ConnectionOptions($options);
     }
-
+    
     /**
      * Creates a new connection
-     *
-     *
+     * 
+     * @param array $listeners
      * @return PromiseInterface Resolves to a \React\Stream\Stream once a connection has been established
      */
-    public function connect() 
+    public function connect(array $listeners) 
     {
         $options = $this->options;
-
+        
+        $listeners = array_merge([
+            Receiver::class,
+            Connector::class,
+            'connection' => Acceptor::class,
+            QoSLevel1::class,
+            QoSLevel2::class,
+        ], $listeners);
+        
         $promise = $this->socketConnector->connect($this->url);
-        $promise->then(Closure::fromCallable([$this, 'onData']));
+        foreach($listeners as $key => $class) {
+            $res = $promise->then(function($stream) use ($class) {
+                $client = new $class($stream, $this->protocol, $this->options, static::$Log);
+                return $client->subscribe();
+            });
+            
+            if (!is_numeric($key)) {
+                $promise = $res;
+            }
+        }
         
-        $connection = $promise->then(Closure::fromCallable([$this, 'sendConnectPacket']));
-        $connection->then(Closure::fromCallable([$this, 'keepAlive']));
-        $connection->then(Closure::fromCallable([$this, 'subScribe']));
-        
-        return $connection;
+        return $promise;
     }
     
     /**
@@ -62,40 +76,4 @@ class Client
     {
         return $this->loop;
     }    
-    
-    protected function onData(Connection $stream)
-    {
-        $client = new Receiver($stream, $this->protocol, $this->options, static::$Log);
-        return $client->subscribe();
-    }
-
-    /**
-     * Periodic send ping to server
-     * @param Connection $stream
-     * @return FulfilledPromise
-     */
-    protected function keepAlive(Connection $stream)
-    {
-        $client = new Keeper($stream, $this->protocol, $this->options, static::$Log);
-        return $client->subscribe();
-    }
-
-    /**
-     * subscribe on topics
-     * @param type $connection
-     */
-    protected function subScribe(Connection $stream) 
-    {
-        $client = new Subscriber($stream, $this->protocol, $this->options, static::$Log);
-        return $client->subscribe();
-    }
-    
-    /**
-     * @return \React\Promise\Promise
-     */
-    protected function sendConnectPacket(Connection $stream) 
-    {
-        $client = new Connector($stream, $this->protocol, $this->options, static::$Log);
-        return $client->subscribe();
-    }
 }

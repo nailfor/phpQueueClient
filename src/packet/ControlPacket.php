@@ -8,11 +8,20 @@ abstract class ControlPacket
     use Traits\Stringable;
     
     /**
+     * Counter for packets
+     * @var int 
+     */
+    static $packetId = 0;
+
+
+    const EVENT = 'none';
+    
+    /**
      * Stored payload string
      * @var string
      */
     protected $payload = '';
-    
+    protected static $type;
 
     /**
      * Get payload without headers
@@ -23,6 +32,11 @@ abstract class ControlPacket
         return $this->payload;
     }
     
+    public static function getType() 
+    {
+        return static::$type;
+    }
+
     /**
      * Get packet payload with headers
      * @return type
@@ -32,7 +46,7 @@ abstract class ControlPacket
         return $this->getFixedHeader() .
                $this->getVariableHeader() .
                $this->getPayload();
-    }    
+    }
 
     /**
      * @return string
@@ -50,13 +64,24 @@ abstract class ControlPacket
         return '';
     }
 
-    
-    /**
-     * show packet for console output
-     * @return type
-     */
-    public function __toString() 
+    public function getName()
     {
-        return addslashes($this->payload);
-    }    
+        $path = explode('\\', static::class);
+        return array_pop($path);
+    }
+    
+    public function getEventName() 
+    {
+        return static::EVENT;
+    }
+    
+    public function parse($data)
+    {
+        return;
+    }
+    
+    public function incrasePacket()
+    {
+        static::$packetId++;
+    }
 }

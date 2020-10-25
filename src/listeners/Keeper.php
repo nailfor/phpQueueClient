@@ -24,7 +24,7 @@ class Keeper extends Listener
     {
         $pingClass = $this->protocol->getPing();
         
-        $packet = new $pingClass;
-        $this->sendPacketToStream($packet);
+        $packet = new $pingClass($rawData, $this->protocol);
+        $this->send($packet);
     }
 }

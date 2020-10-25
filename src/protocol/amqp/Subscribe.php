@@ -1,6 +1,6 @@
 <?php
 
-namespace nailfor\queue\packet\amqp;
+namespace nailfor\queue\protocol\amqp;
 
 class Subscribe extends Packet 
 {
