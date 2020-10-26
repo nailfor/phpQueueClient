@@ -18,6 +18,7 @@ class Sender extends Subscriber
     {
         $this->deferred = new Deferred();
         $this->stream->on('PUBLISH_SEND', Closure::fromCallable([$this, 'onPublish']));
+        $this->stream->on('PUBLISH_ACKNOWLEDGE', Closure::fromCallable([$this, 'onResolve']));
         $this->stream->on('PUBLISH_ACKNOWLEDGE_SEND', Closure::fromCallable([$this, 'onResolve']));
         $this->stream->on('PUBLISH_COMPLETE_SEND', Closure::fromCallable([$this, 'onResolve']));
 
