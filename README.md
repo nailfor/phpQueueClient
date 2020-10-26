@@ -115,8 +115,11 @@ class MQTTClass
 
 also commands are available
     ClientFactory::run //subscribe and get messages
+    
     ClientFactory::publish
+    
     ClientFactory::unsubscribe
+    
     ClientFactory::ping
     
 The Logger suppurt 3 level of details: notice, info and debug. Offcourse you can disable it set null in last param
