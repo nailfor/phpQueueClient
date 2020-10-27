@@ -48,7 +48,7 @@ class Packet extends ControlPacket
         $data = explode("\n\n", $data);
         
         $header = $data[0] ?? '';
-        $this->data = substr($data[1] ?? '', 0, -2);
+        $this->message = substr($data[1] ?? '', 0, -2);
 
         $data = explode("\n", $header);
         foreach ($data as $parse) {

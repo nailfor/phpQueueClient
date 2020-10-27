@@ -63,14 +63,12 @@ class MQTTClass
 {
     public function onMessage($packet)
     {
-        $id = $packet->getMessageId();
-        $payload = $packet->getPayload();
+        //...
     }
 
     public function onCapitalMessage($packet)
     {
-        $id = $packet->getMessageId();
-        $payload = $packet->getPayload();
+        //...
     }
 
     public function onError($reason) {
