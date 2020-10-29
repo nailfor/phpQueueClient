@@ -66,8 +66,10 @@ class Packet extends ControlPacket
         $type = static::$type << 4;
         $type += $this->addHeaderBits();
         
+        $len = $this->getRemainingLength();
+        
         $res[] = chr($type);
-        $res[] = chr($this->getRemainingLength());
+        $res[] = $this->getLength($len);
 
         return implode("", $res);
     }
@@ -82,8 +84,24 @@ class Packet extends ControlPacket
         $lenHeader = strlen($this->getVariableHeader());
         $lenPayload = strlen($this->getPayload());
         
+        
         return  $lenHeader + $lenPayload;
     }
+    
+    protected function getLength(int $x)
+    {
+        $res = [];
+        do{
+            $byte = $x%0x80;
+            $x = (int)($x/0x80);
+            if ($x > 0) {
+                $byte = $byte | 0x80;
+            }
+            $res[] = chr($byte);
+        } while ($x > 0);
+
+        return implode("", $res);
+    }    
 
     protected function wrapData($data)
     {
