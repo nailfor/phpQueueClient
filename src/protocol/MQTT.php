@@ -61,7 +61,7 @@ class MQTT implements IProtocol
      */
     public function next($data)
     {
-        while ($data[1] ?? 0) {
+        while (isset($data[1])) {
             if (!$this->packetData) {
                 //3.2.1 Fixed header
                 $offset = 1;
