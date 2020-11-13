@@ -28,7 +28,7 @@ class ClientFactory
      * @param string $resolverIp
      * @return Client
      */
-    public static function getClient(string $url, array $options = [], IProtocol $protocol = null, string $resolverIp = '8.8.8.8') 
+    public static function getClient(string $url, array $options = [], IProtocol $protocol = null, string $resolverIp = '') 
     {
         $loop = EventLoopFactory::create();
         $connector = self::createConnector($resolverIp, $loop);
@@ -48,10 +48,15 @@ class ClientFactory
      */
     protected static function createConnector($resolverIp, $loop)
     {
+        $connector = new TcpConnector($loop);
+        if (!$resolverIp) {
+            return $connector;
+        }
+        
         $dnsResolverFactory = new DnsResolverFactory();
         $resolver = $dnsResolverFactory->createCached($resolverIp, $loop);
 
-        return new DnsConnector(new TcpConnector($loop), $resolver);
+        return new DnsConnector($connector, $resolver);
     }
     
     /**
