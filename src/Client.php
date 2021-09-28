@@ -6,8 +6,6 @@ use nailfor\queue\protocol\IProtocol;
 use nailfor\queue\packet\ConnectionOptions;
 use nailfor\queue\listeners\Acceptor;
 use nailfor\queue\listeners\Connector;
-use nailfor\queue\listeners\QoSLevel1;
-use nailfor\queue\listeners\QoSLevel2;
 use nailfor\queue\listeners\Receiver;
 
 use Closure;
@@ -50,8 +48,6 @@ class Client
             Receiver::class,
             Connector::class,
             'connection' => Acceptor::class,
-            QoSLevel1::class,
-            QoSLevel2::class,
         ], $listeners);
         
         $promise = $this->socketConnector->connect($this->url);

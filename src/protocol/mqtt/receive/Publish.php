@@ -103,4 +103,9 @@ class Publish extends Packet
     {
         return static::EVENT;
     }
+    
+    public function getTopic()
+    {
+        return $this->topic;
+    }
 }

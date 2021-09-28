@@ -147,6 +147,7 @@ class ClientFactory
             $client::$Log = $log;
         }
         
+        $listeners = array_merge($protocol->getListeners(), $listeners);
         $connection = $client->connect($listeners);
 
         if ($errorClosure) {

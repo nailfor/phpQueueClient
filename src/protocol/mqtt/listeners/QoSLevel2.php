@@ -1,8 +1,11 @@
 <?php
 
-namespace nailfor\queue\listeners;
+namespace nailfor\queue\protocol\mqtt\listeners;
 
 use Closure;
+use nailfor\queue\protocol\mqtt\receive\PublishReceived;
+use nailfor\queue\protocol\mqtt\receive\PublishComplete;
+use nailfor\queue\protocol\mqtt\receive\PublishReleased;
 
 class QoSLevel2 extends QoSLevel1
 {
@@ -10,7 +13,7 @@ class QoSLevel2 extends QoSLevel1
 
     protected function getPacketClass() 
     {
-        return \nailfor\queue\protocol\mqtt\receive\PublishReceived::class;
+        return PublishReceived::class;
     }
     
     public function subscribe()
@@ -30,13 +33,13 @@ class QoSLevel2 extends QoSLevel1
     
     protected function onReleased($packet)
     {
-        $packetClass = \nailfor\queue\protocol\mqtt\receive\PublishComplete::class;
+        $packetClass = PublishComplete::class;
         $this->onData($packetClass, $packet);
     }
     
     protected function onReceived($packet)
     {
-        $packetClass = \nailfor\queue\protocol\mqtt\receive\PublishReleased::class;
+        $packetClass = PublishReleased::class;
         $this->onData($packetClass, $packet);
     }
 }

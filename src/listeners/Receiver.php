@@ -18,9 +18,10 @@ class Receiver extends Listener
     
     protected function onData($rawData)
     {
+        $raw = bin2hex($rawData);
+        $this->log("raw data: '$raw'", 'debug');
         try {
             foreach ($this->protocol->next($rawData) as $packet) {
-                $raw = bin2hex($rawData);
                 if (!$packet) {
                     $this->log("recieve '$raw'", 'error');
                     $this->stream->emit('INVALID', [$rawData]);
@@ -32,8 +33,12 @@ class Receiver extends Listener
 
                 $this->log("recieve '$class', emit '$event'");
                 $this->log("$class: $packet", 'info');
-                $this->log("raw data: '$raw'", 'debug');
                 $this->stream->emit($event, [$packet]);
+                
+                if (method_exists($packet, 'getTopic')) {
+                    $topic = $packet->getTopic();
+                    $this->stream->emit($topic, [$packet]);
+                }
             }
         }
         catch (Violation $e) {

@@ -35,6 +35,15 @@ class AMQP implements IProtocol
     /**
      * {@inheritdoc}
      */
+    public function getListeners(): array 
+    {
+        return [
+        ];
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
     public function getProtocolIdentifierString()
     {
         return 'AMQP';

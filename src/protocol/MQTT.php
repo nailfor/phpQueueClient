@@ -12,6 +12,8 @@ use nailfor\queue\protocol\mqtt\Message;
 use nailfor\queue\protocol\mqtt\Ping;
 use nailfor\queue\protocol\mqtt\Subscribe;
 use nailfor\queue\protocol\mqtt\Unsubscribe;
+use nailfor\queue\protocol\mqtt\listeners\QoSLevel1;
+use nailfor\queue\protocol\mqtt\listeners\QoSLevel2;
 
 use DirectoryIterator;
 
@@ -38,6 +40,17 @@ class MQTT implements IProtocol
             $class = "$packets\\receive\\$name";
             $this->acknowledges[$class::getType()] = $class;
         }
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function getListeners(): array 
+    {
+        return [
+            QoSLevel1::class,
+            QoSLevel2::class,
+        ];
     }
     
     /**

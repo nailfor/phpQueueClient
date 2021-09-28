@@ -1,8 +1,9 @@
 <?php
 
-namespace nailfor\queue\listeners;
+namespace nailfor\queue\protocol\mqtt\listeners;
 
 use Closure;
+use nailfor\queue\listeners\Listener;
 
 class QoSLevel1 extends Listener
 {

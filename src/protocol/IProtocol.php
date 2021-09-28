@@ -13,4 +13,9 @@ interface IProtocol
     
     public function next($data);
     
+    /**
+     * Return addition listeners of protocol
+     * @return array
+     */
+    public function getListeners(): array;
 }
